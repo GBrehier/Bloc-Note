@@ -22,17 +22,22 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+	// initialisation des composants graphiques
+	
+	
 	TextArea textArea;
 	FileChooser file;
 	String contenu="";
 	String chemin=null;
 
+	
+	//composants du menu
 	MenuBar menu;
 
-	Menu fichier;
+	Menu fichier; // composant de la barre du menu
 	Menu edition;
 
-	MenuItem ouvrir;
+	MenuItem ouvrir; // composant des sous-options
 	MenuItem sauvegarder;
 	MenuItem coller;
 	MenuItem copier;
@@ -41,7 +46,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		
 			VBox root = new VBox();
-			Scene scene = new Scene(root,600,600);
+			Scene scene = new Scene(root,600,600); // mise en place de la scene
 
 			textArea= new TextArea();
 			creationTextArea(scene);
@@ -62,26 +67,26 @@ public class Main extends Application {
 	}
 
 	private void creationMenu(Stage primaryStage) {
-		fichier = new Menu("Fichier");
+		fichier = new Menu("Fichier");   // menu fichier
 		creationMenuFichier(primaryStage);
 
-		edition = new Menu("Edition");	
+		edition = new Menu("Edition");	// menu edition
 		creationMenuEdition();
 
-		menu.getMenus().addAll(fichier,edition);
+		menu.getMenus().addAll(fichier,edition); // ajout des sous menus au menu principal
 		menu.setMaxWidth(Double.MAX_VALUE);
 	}
 
 	private void creationMenuEdition() {
-		copier = new MenuItem("Copier");
+		copier = new MenuItem("Copier"); // options du menu edition
 		coller = new MenuItem("Coller");
-		evenementMenuItemColler();
-		evenementMenuItemCopier();
-		edition.getItems().addAll(copier,coller);
+		evenementMenuItemColler();	// mise en place des évènements
+		evenementMenuItemCopier(); 
+		edition.getItems().addAll(copier,coller);  // ajout des options
 	}
 
 	private void evenementMenuItemCopier() {
-		copier.setAccelerator(KeyCombination.keyCombination("Ctrl+C"));
+		copier.setAccelerator(KeyCombination.keyCombination("Ctrl+C")); // si l'utilisateur fait ctrl cela aura le même effet que l'option
 		copier.setOnAction(new EventHandler <ActionEvent>() {
 
 			@Override
@@ -93,7 +98,7 @@ public class Main extends Application {
 	}
 
 	private void evenementMenuItemColler() {
-		coller.setAccelerator(KeyCombination.keyCombination("Ctrl+V"));
+		coller.setAccelerator(KeyCombination.keyCombination("Ctrl+V")); // même chose que pour copier
 		coller.setOnAction(new EventHandler <ActionEvent>() {
 
 			@Override
@@ -106,14 +111,14 @@ public class Main extends Application {
 
 	private void creationMenuFichier(Stage primaryStage) {
 		ouvrir  = new MenuItem("Ouvrir");
-		sauvegarder = new MenuItem("Sauvegarder");
+		sauvegarder = new MenuItem("Sauvegarder"); // option du menu Fichier
 		evenementMenuItemOuvrir(primaryStage);
 		evenementMenuItemSauvegarder(primaryStage);
-		fichier.getItems().addAll(ouvrir,sauvegarder);
+		fichier.getItems().addAll(ouvrir,sauvegarder); // ajout des options au menu
 	}
 
 	private void creationTextArea(Scene scene) {
-		textArea.prefHeight(Double.MAX_VALUE);
+		textArea.prefHeight(Double.MAX_VALUE); // Double.MAX_VALUE pour que la textArea prenne tout l'espace
 		textArea.prefWidth(Double.MAX_VALUE);
 		textArea.setWrapText(true);
 		textArea.setPrefRowCount((int)((scene.getHeight()/16)-1));
@@ -122,38 +127,36 @@ public class Main extends Application {
 	}
 
 	private void evenementMenuItemSauvegarder(Stage primaryStage) {
-		sauvegarder.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
+		sauvegarder.setAccelerator(KeyCombination.keyCombination("Ctrl+S")); // ctrl + s = bouton sauvegarder
 		sauvegarder.setOnAction(new EventHandler <ActionEvent>(){
 			@Override
 			public void handle (ActionEvent event) {
 
 
 				if(null==chemin) {
-					FileChooser fileChooser = new FileChooser();
-					fileChooser.setTitle("Save file");
+					FileChooser fileChooser = new FileChooser(); // fenetre explorateur de fichier 
+					fileChooser.setTitle("Sauvegarder un fichier");
 
-					FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Text", "*.txt");
+					FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Text", "*.txt"); // filtres de fichier
 					FileChooser.ExtensionFilter filter2 = new FileChooser.ExtensionFilter("HTML", "*.html");
-					fileChooser.getExtensionFilters().addAll(filter,filter2);
-					File savedFile = fileChooser.showSaveDialog(primaryStage);
-
-					String extension = fileChooser.getSelectedExtensionFilter().getExtensions().get(0);
-					System.out.println(extension);
-
-					chemin= savedFile.getAbsolutePath();
+					fileChooser.getExtensionFilters().addAll(filter,filter2); // ajout des filtres
+									
+					File savedFile = fileChooser.showSaveDialog(primaryStage); 
+					
+					chemin= savedFile.getAbsolutePath(); // on récupère le chemin pour le prochaine sauvegarde
 					primaryStage.setTitle(savedFile.getName()+ " - Bloc-note");
 
 				}
 				try {
 
-					if(null!=chemin) {
+					if(null!=chemin) { // dans le cas où le chemin est connue
 
-						BufferedWriter scribe = new BufferedWriter(new FileWriter(chemin));
+						BufferedWriter scribe = new BufferedWriter(new FileWriter(chemin)); // on initialise un scribe
 
-						String[] texteLigne = textArea.getText().split("\n");
-						for(int i=0;i<texteLigne.length;i++) {
-							scribe.write(texteLigne[i]);
-							scribe.newLine();
+						String[] texteLigne = textArea.getText().split("\n"); // on récupère chaque ligne dans un tableau de chaine de caractères
+						for(int i=0;i<texteLigne.length;i++) { // pour tout le tableau
+							scribe.write(texteLigne[i]); // on recopie la ligne
+							scribe.newLine(); // on retourne à la ligne
 						}
 
 						scribe.close();
@@ -168,30 +171,31 @@ public class Main extends Application {
 	}
 
 	private void evenementMenuItemOuvrir(Stage primaryStage) {
-		ouvrir.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
+		ouvrir.setAccelerator(KeyCombination.keyCombination("Ctrl+O")); // meme chose que pour sauvegarder
 		ouvrir.setOnAction(new EventHandler <ActionEvent>(){
 			@Override
 			public void handle (ActionEvent event) {
-				file= new FileChooser();
+				
+				file= new FileChooser();  // fenetre explorateur de fichier
 				file.setTitle("Choix du fichier");
 				File fichier = file.showOpenDialog(primaryStage);
-				chemin= fichier.getAbsolutePath();
+				chemin= fichier.getAbsolutePath(); //on recupere le chemin absolu du fichier
 
 				try {
 
 					String ligne ;
-					BufferedReader lecteur = new BufferedReader(new FileReader(chemin));
-
-					while ((ligne = lecteur.readLine()) != null) {
-						contenu=contenu+ligne+"\n";
+					BufferedReader lecteur = new BufferedReader(new FileReader(chemin)); 
+					// on utilise le chemin pour créer un FileReader
+					while ((ligne = lecteur.readLine()) != null) { // tant que le lecteur n'est pas à la fin du fichier
+						contenu=contenu+ligne+"\n"; //on remplit la variable contenu
 					}
 
 					lecteur.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				} 
-				primaryStage.setTitle(fichier.getName()+ " - Bloc-note");
-				textArea.setText(contenu);
+				primaryStage.setTitle(fichier.getName()+ " - Bloc-note"); // on change le titre de la fenêtre pour savoir quel fichier on modifie
+				textArea.setText(contenu); // on met le contenu comme texte
 				contenu="";
 			}
 		});
